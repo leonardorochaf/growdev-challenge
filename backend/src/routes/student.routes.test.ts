@@ -82,4 +82,55 @@ describe('Student routes', () => {
       });
     });
   });
+
+  describe('GET /students', () => {
+    beforeAll(async () => {
+      const db = await initFakePgDb([Student]);
+      pgConnection = DbConnection.getInstance();
+
+      await pgConnection.getClient(Student).save({
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '654321',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+
+      backup = db.backup();
+    });
+
+    it('Should return 400 if fields validation fails', async () => {
+      const { status, body } = await request(app).get('/api/students?sort=invalid&order=ASC&page=1&qnt=10');
+
+      expect(status).toBe(400);
+      expect(body).toEqual({
+        errors: {
+          sort: ["Invalid enum value. Expected 'name' | 'email' | 'ra' | 'cpf', received 'invalid'"],
+        },
+      });
+    });
+
+    it('Should return empty array if no students are found', async () => {
+      const { status, body } = await request(app).get('/api/students?sort=name&order=ASC&page=2&qnt=10');
+
+      expect(status).toBe(200);
+      expect(body).toEqual([]);
+    });
+
+    it('Should return 200 on success', async () => {
+      const { status, body } = await request(app).get('/api/students?sort=name&order=ASC&page=1&qnt=10');
+
+      expect(status).toBe(200);
+      expect(body).toEqual([{
+        id: expect.any(Number),
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '654321',
+        cpf: '12345678900',
+        createdAt: expect.any(String),
+        deletedAt: null,
+      }]);
+    });
+  });
 });

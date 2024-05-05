@@ -5,6 +5,7 @@ jest.mock('../repositories/student.repository', () => ({
   StudentRepository: jest.fn().mockImplementation(() => ({
     save: jest.fn(),
     getByRA: jest.fn(),
+    getAll: jest.fn(),
   })),
 }));
 jest.mock('../log/logger');
@@ -108,6 +109,66 @@ describe('StudentService', () => {
         cpf: '12345678900',
         createdAt: expect.any(Date),
       });
+    });
+  });
+
+  describe('list', () => {
+    beforeAll(() => {
+      mockStudentRepository.getAll.mockResolvedValue([{
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      }]);
+    });
+
+    it('Should call getAll with correct values', async () => {
+      await sut.list({
+        filter: 'John',
+        sortParam: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        qnt: 10,
+      });
+
+      expect(mockStudentRepository.getAll).toHaveBeenCalledWith(10, 0, 'name', 'ASC', 'John');
+    });
+
+    it('Should throw if getAll throws', async () => {
+      mockStudentRepository.getAll.mockRejectedValueOnce(new Error('Test Error'));
+
+      const promise = sut.list({
+        filter: 'John',
+        sortParam: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        qnt: 10,
+      });
+
+      await expect(promise).rejects.toThrow('Test Error');
+    });
+
+    it('Should return the students', async () => {
+      const students = await sut.list({
+        filter: 'John',
+        sortParam: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        qnt: 10,
+      });
+
+      expect(students).toEqual([{
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: expect.any(Date),
+        deletedAt: undefined,
+      }]);
     });
   });
 });
