@@ -222,4 +222,91 @@ describe('StudentService', () => {
       });
     });
   });
+
+  describe('update', () => {
+    beforeAll(() => {
+      mockStudentRepository.getById.mockResolvedValue({
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+      mockStudentRepository.save.mockResolvedValue({
+        id: 1,
+        name: 'John Doe 2',
+        email: 'johndoe2@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+    });
+
+    it('Should call getById with correct value', async () => {
+      await sut.update(1, { name: 'John Doe 2' });
+
+      expect(mockStudentRepository.getById).toHaveBeenCalledWith(1);
+    });
+
+    it('Should throw if student is not found', async () => {
+      mockStudentRepository.getById.mockResolvedValueOnce(null);
+
+      const promise = sut.update(1, { name: 'John Doe 2' });
+
+      await expect(promise).rejects.toThrow('Estudante não encontrado');
+    });
+
+    it('Should call save new email if provided', async () => {
+      await sut.update(1, { email: 'johndoe2@mail.com' });
+
+      expect(mockStudentRepository.save).toHaveBeenCalledWith({
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe2@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: expect.any(Date),
+        deletedAt: undefined,
+      });
+    });
+
+    it('Should call save new name if provided', async () => {
+      await sut.update(1, { name: 'John Doe 2' });
+
+      expect(mockStudentRepository.save).toHaveBeenCalledWith({
+        id: 1,
+        name: 'John Doe 2',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: expect.any(Date),
+        deletedAt: undefined,
+      });
+    });
+
+    it('Should throw if save throws', async () => {
+      mockStudentRepository.save.mockRejectedValueOnce(new Error('Test Error'));
+
+      const promise = sut.update(1, { name: 'John Doe 2' });
+
+      await expect(promise).rejects.toThrow('Test Error');
+    });
+
+    it('Should return the updated student', async () => {
+      const student = await sut.update(1, { name: 'John Doe 2', email: 'johndoe2@mail.com' });
+
+      expect(student).toEqual({
+        id: 1,
+        name: 'John Doe 2',
+        email: 'johndoe2@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: expect.any(Date),
+        deletedAt: undefined,
+      });
+    });
+  });
 });

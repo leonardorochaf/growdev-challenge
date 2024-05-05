@@ -175,4 +175,68 @@ describe('Student routes', () => {
       });
     });
   });
+
+  describe('PUT /students/:id', () => {
+    const requestBody = {
+      name: 'John Doe 2',
+      email: 'johndoe2@mail.com',
+    };
+
+    beforeAll(async () => {
+      const db = await initFakePgDb([Student]);
+      pgConnection = DbConnection.getInstance();
+
+      await pgConnection.getClient(Student).save({
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '654321',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+
+      backup = db.backup();
+    });
+
+    it('Should return 400 if fields validation fails', async () => {
+      const { status, body } = await request(app)
+        .put('/api/students/1')
+        .send({ ...requestBody, name: '' });
+
+      expect(status).toBe(400);
+      expect(body).toEqual({
+        errors: {
+          name: ['String must contain at least 3 character(s)'],
+        },
+      });
+    });
+
+    it('Should return 404 if student is not found', async () => {
+      const { status, body } = await request(app)
+        .put('/api/students/2')
+        .send(requestBody);
+
+      expect(status).toBe(404);
+      expect(body).toEqual({
+        error: 'Estudante não encontrado',
+      });
+    });
+
+    it('Should return 200 on success', async () => {
+      const { status, body } = await request(app)
+        .put('/api/students/1')
+        .send(requestBody);
+
+      expect(status).toBe(200);
+      expect(body).toEqual({
+        id: 1,
+        name: 'John Doe 2',
+        email: 'johndoe2@mail.com',
+        ra: '654321',
+        cpf: '12345678900',
+        createdAt: expect.any(String),
+        deletedAt: null,
+      });
+    });
+  });
 });
