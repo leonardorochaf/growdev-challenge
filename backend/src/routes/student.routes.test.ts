@@ -133,4 +133,46 @@ describe('Student routes', () => {
       }]);
     });
   });
+
+  describe('GET /students/:id', () => {
+    beforeAll(async () => {
+      const db = await initFakePgDb([Student]);
+      pgConnection = DbConnection.getInstance();
+
+      await pgConnection.getClient(Student).save({
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '654321',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+
+      backup = db.backup();
+    });
+
+    it('Should return 404 if student is not found', async () => {
+      const { status, body } = await request(app).get('/api/students/2');
+
+      expect(status).toBe(404);
+      expect(body).toEqual({
+        error: 'Estudante não encontrado',
+      });
+    });
+
+    it('Should return 200 on success', async () => {
+      const { status, body } = await request(app).get('/api/students/1');
+
+      expect(status).toBe(200);
+      expect(body).toEqual({
+        id: expect.any(Number),
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '654321',
+        cpf: '12345678900',
+        createdAt: expect.any(String),
+        deletedAt: null,
+      });
+    });
+  });
 });

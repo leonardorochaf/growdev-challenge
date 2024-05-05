@@ -6,6 +6,7 @@ jest.mock('../repositories/student.repository', () => ({
     save: jest.fn(),
     getByRA: jest.fn(),
     getAll: jest.fn(),
+    getById: jest.fn(),
   })),
 }));
 jest.mock('../log/logger');
@@ -169,6 +170,56 @@ describe('StudentService', () => {
         createdAt: expect.any(Date),
         deletedAt: undefined,
       }]);
+    });
+  });
+
+  describe('getById', () => {
+    beforeAll(() => {
+      mockStudentRepository.getById.mockResolvedValue({
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+    });
+
+    it('Should call getById with correct value', async () => {
+      await sut.getById(1);
+
+      expect(mockStudentRepository.getById).toHaveBeenCalledWith(1);
+    });
+
+    it('Should throw if student is not found', async () => {
+      mockStudentRepository.getById.mockResolvedValueOnce(null);
+
+      const promise = sut.getById(1);
+
+      await expect(promise).rejects.toThrow('Estudante não encontrado');
+    });
+
+    it('Should throw if getById throws', async () => {
+      mockStudentRepository.getById.mockRejectedValueOnce(new Error('Test Error'));
+
+      const promise = sut.getById(1);
+
+      await expect(promise).rejects.toThrow('Test Error');
+    });
+
+    it('Should return the student', async () => {
+      const student = await sut.getById(1);
+
+      expect(student).toEqual({
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: expect.any(Date),
+        deletedAt: undefined,
+      });
     });
   });
 });
