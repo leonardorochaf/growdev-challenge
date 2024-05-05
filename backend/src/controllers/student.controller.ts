@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import logger from '../log/logger';
 import { UnprocessableEntityError } from '../errors/unprocessable-entity.error';
 import { StudentService } from '../services/student.service';
-import { createStudentSchema, listStudentsSchema } from '../validation/schemas/student.schemas';
+import { createStudentSchema, listStudentsSchema, updateStudentSchema } from '../validation/schemas/student.schemas';
 import { Validator } from '../validation/validator';
 import { NotFoundError } from '../errors/not-found.error';
 
@@ -66,6 +66,30 @@ export class StudentController {
       return res.status(200).send(student);
     } catch (error) {
       logger.error(error, 'StudentController.getStudentById - Error getting student by id');
+      if (error instanceof NotFoundError) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+      return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
+    }
+  }
+
+  @Validator(updateStudentSchema)
+  async update(req: Request, res: Response) {
+    logger.info('StudentController.updateStudent - Updating student');
+    try {
+      const { id } = req.params;
+      const {
+        name, email,
+      } = req.body;
+
+      const student = await this.studentService.update(+id, {
+        name, email,
+      });
+
+      logger.info('StudentController.updateStudent - Student updated successfully');
+      return res.status(200).send(student);
+    } catch (error) {
+      logger.error(error, 'StudentController.updateStudent - Error updating student');
       if (error instanceof NotFoundError) {
         return res.status(error.statusCode).json({ error: error.message });
       }

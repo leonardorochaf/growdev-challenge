@@ -20,4 +20,8 @@ export default (router: Router) => {
   router.get('/students/:id', (req, res) => {
     studentController.getById(req, res);
   });
+
+  router.put('/students/:id', (req, res) => {
+    studentController.update(req, res);
+  });
 };

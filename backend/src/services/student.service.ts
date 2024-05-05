@@ -45,6 +45,27 @@ export class StudentService {
     logger.info(student, 'StudentService.get - Student retrieved successfully');
     return student;
   }
+
+  async update(id: number, input: UpdateStudentInput): Promise<Student> {
+    logger.info({ id, input }, 'StudentService.update - Updating student');
+    const student = await this.studentRepository.getById(id);
+
+    if (!student) {
+      logger.error({ id }, 'StudentService.update - Student not found');
+      throw new NotFoundError('Estudante não encontrado');
+    }
+
+    const updateData = {
+      ...student,
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.email !== undefined ? { email: input.email } : {}),
+    };
+
+    const updatedStudent = await this.studentRepository.save(updateData);
+
+    logger.info(updatedStudent, 'StudentService.update - Student updated successfully');
+    return updatedStudent;
+  }
 }
 
 export type CreateStudentInput = {
@@ -60,4 +81,9 @@ export type ListStudentsInput = {
   sortOrder: 'ASC' | 'DESC'
   page: number
   qnt: number
+};
+
+export type UpdateStudentInput = {
+  name?: string
+  email?: string
 };

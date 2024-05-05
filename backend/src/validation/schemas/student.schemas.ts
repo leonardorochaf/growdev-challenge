@@ -54,3 +54,8 @@ export const listStudentsSchema = z.object({
     message: 'Quantity must contain only numbers',
   }),
 });
+
+export const updateStudentSchema = z.object({
+  name: z.string().min(3).max(255).optional(),
+  email: z.string().email().optional(),
+});
