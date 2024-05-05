@@ -7,6 +7,7 @@ jest.mock('../repositories/student.repository', () => ({
     getByRA: jest.fn(),
     getAll: jest.fn(),
     getById: jest.fn(),
+    delete: jest.fn(),
   })),
 }));
 jest.mock('../log/logger');
@@ -307,6 +308,54 @@ describe('StudentService', () => {
         createdAt: expect.any(Date),
         deletedAt: undefined,
       });
+    });
+  });
+
+  describe('delete', () => {
+    beforeAll(() => {
+      mockStudentRepository.getById.mockResolvedValue({
+        id: 1,
+        name: 'John Doe',
+        email: 'johndoe@mail.com',
+        ra: '123456',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        deletedAt: undefined,
+      });
+    });
+
+    it('Should call getById with correct value', async () => {
+      await sut.delete(1);
+
+      expect(mockStudentRepository.getById).toHaveBeenCalledWith(1);
+    });
+
+    it('Should throw if student is not found', async () => {
+      mockStudentRepository.getById.mockResolvedValueOnce(null);
+
+      const promise = sut.delete(1);
+
+      await expect(promise).rejects.toThrow('Estudante não encontrado');
+    });
+
+    it('Should call delete with correct value', async () => {
+      await sut.delete(1);
+
+      expect(mockStudentRepository.delete).toHaveBeenCalledWith(1);
+    });
+
+    it('Should throw if delete throws', async () => {
+      mockStudentRepository.delete.mockRejectedValueOnce(new Error('Test Error'));
+
+      const promise = sut.delete(1);
+
+      await expect(promise).rejects.toThrow('Test Error');
+    });
+
+    it('Should return undefined', async () => {
+      const result = await sut.delete(1);
+
+      expect(result).toBeUndefined();
     });
   });
 });
