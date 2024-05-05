@@ -5,6 +5,7 @@ import { UnprocessableEntityError } from '../errors/unprocessable-entity.error';
 import { StudentService } from '../services/student.service';
 import { createStudentSchema, listStudentsSchema } from '../validation/schemas/student.schemas';
 import { Validator } from '../validation/validator';
+import { NotFoundError } from '../errors/not-found.error';
 
 export class StudentController {
   constructor(private readonly studentService: StudentService) { }
@@ -50,6 +51,24 @@ export class StudentController {
       return res.status(200).send(students);
     } catch (error) {
       logger.error(error, 'StudentController.listStudents - Error listing students');
+      return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
+    }
+  }
+
+  async getById(req: Request, res: Response) {
+    logger.info('StudentController.getStudentById - Getting student by id');
+    try {
+      const { id } = req.params;
+
+      const student = await this.studentService.getById(+id);
+
+      logger.info('StudentController.getStudentById - Student retrieved successfully');
+      return res.status(200).send(student);
+    } catch (error) {
+      logger.error(error, 'StudentController.getStudentById - Error getting student by id');
+      if (error instanceof NotFoundError) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
       return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
     }
   }

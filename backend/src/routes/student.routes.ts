@@ -16,4 +16,8 @@ export default (router: Router) => {
   router.get('/students', (req, res) => {
     studentController.list(req, res);
   });
+
+  router.get('/students/:id', (req, res) => {
+    studentController.getById(req, res);
+  });
 };

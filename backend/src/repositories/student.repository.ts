@@ -43,4 +43,14 @@ export class StudentRepository extends AbstractRepository {
     logger.info('StudentRepository.getAll - Students found');
     return students;
   }
+
+  async getById(id: number): Promise<Student | null> {
+    logger.info('StudentRepository.getById - Getting student by ID');
+    const client = this.getClient(Student);
+
+    const student = await client.findOne({ where: { id } });
+
+    logger.info('StudentRepository.getById - Student found');
+    return student;
+  }
 }

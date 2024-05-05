@@ -1,6 +1,7 @@
 import logger from '../log/logger';
 import { Student } from '../database/models/student.model';
 import { UnprocessableEntityError } from '../errors/unprocessable-entity.error';
+import { NotFoundError } from '../errors/not-found.error';
 import { StudentRepository } from '../repositories/student.repository';
 
 export class StudentService {
@@ -11,6 +12,7 @@ export class StudentService {
     const student = await this.studentRepository.getByRA(input.ra);
 
     if (student) {
+      logger.error(input, 'StudentService.create - Student with RA already exists');
       throw new UnprocessableEntityError('Estudante com RA já cadastrado');
     }
     const createdStudent = await this.studentRepository.save({ ...input });
@@ -29,6 +31,19 @@ export class StudentService {
 
     logger.info(students, 'StudentService.list - Students listed successfully');
     return students;
+  }
+
+  async getById(id: number): Promise<Student> {
+    logger.info({ id }, 'StudentService.get - Getting student by id');
+    const student = await this.studentRepository.getById(id);
+
+    if (!student) {
+      logger.error({ id }, 'StudentService.get - Student not found');
+      throw new NotFoundError('Estudante não encontrado');
+    }
+
+    logger.info(student, 'StudentService.get - Student retrieved successfully');
+    return student;
   }
 }
 
