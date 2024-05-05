@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import Pino from 'pino';
 import rTracer from 'cls-rtracer';
 

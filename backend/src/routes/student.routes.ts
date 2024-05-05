@@ -24,4 +24,8 @@ export default (router: Router) => {
   router.put('/students/:id', (req, res) => {
     studentController.update(req, res);
   });
+
+  router.delete('/students/:id', (req, res) => {
+    studentController.delete(req, res);
+  });
 };

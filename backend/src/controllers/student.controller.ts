@@ -96,4 +96,22 @@ export class StudentController {
       return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
     }
   }
+
+  async delete(req: Request, res: Response) {
+    logger.info('StudentController.deleteStudent - Deleting student');
+    try {
+      const { id } = req.params;
+
+      await this.studentService.delete(+id);
+
+      logger.info('StudentController.deleteStudent - Student deleted successfully');
+      return res.status(204).send();
+    } catch (error) {
+      logger.error(error, 'StudentController.deleteStudent - Error deleting student');
+      if (error instanceof NotFoundError) {
+        return res.status(error.statusCode).json({ error: error.message });
+      }
+      return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
+    }
+  }
 }

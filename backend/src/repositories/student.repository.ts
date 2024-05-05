@@ -53,4 +53,13 @@ export class StudentRepository extends AbstractRepository {
     logger.info('StudentRepository.getById - Student found');
     return student;
   }
+
+  async delete(id: number): Promise<void> {
+    logger.info('StudentRepository.delete - Deleting student');
+    const client = this.getClient(Student);
+
+    await client.softDelete(id);
+
+    logger.info('StudentRepository.delete - Student deleted');
+  }
 }

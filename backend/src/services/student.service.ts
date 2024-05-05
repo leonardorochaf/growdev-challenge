@@ -66,6 +66,20 @@ export class StudentService {
     logger.info(updatedStudent, 'StudentService.update - Student updated successfully');
     return updatedStudent;
   }
+
+  async delete(id: number): Promise<void> {
+    logger.info({ id }, 'StudentService.delete - Deleting student');
+    const student = await this.studentRepository.getById(id);
+
+    if (!student) {
+      logger.error({ id }, 'StudentService.delete - Student not found');
+      throw new NotFoundError('Estudante não encontrado');
+    }
+
+    await this.studentRepository.delete(id);
+
+    logger.info('StudentService.delete - Student deleted successfully');
+  }
 }
 
 export type CreateStudentInput = {
