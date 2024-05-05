@@ -12,4 +12,8 @@ export default (router: Router) => {
   router.post('/students', (req, res) => {
     studentController.create(req, res);
   });
+
+  router.get('/students', (req, res) => {
+    studentController.list(req, res);
+  });
 };

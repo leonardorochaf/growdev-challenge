@@ -42,3 +42,15 @@ export const createStudentSchema = z.object({
   }),
   cpf: z.string().refine((cpf) => validateCPF(cpf), { message: 'Invalid cpf format' }),
 }).required();
+
+export const listStudentsSchema = z.object({
+  filter: z.string().optional(),
+  sort: z.enum(['name', 'email', 'ra', 'cpf']),
+  order: z.enum(['ASC', 'DESC']),
+  page: z.string().refine((value) => validateNumericString(value), {
+    message: 'Page must contain only numbers',
+  }),
+  qnt: z.string().refine((value) => validateNumericString(value), {
+    message: 'Quantity must contain only numbers',
+  }),
+});
