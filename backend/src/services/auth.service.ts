@@ -1,8 +1,9 @@
 import logger from '../log/logger';
-import { generateToken } from '../utils/token.utils';
+import { generateToken, verifyToken } from '../utils/token.utils';
 import { validatePassword } from '../utils/crypt.utils';
 import { UserRepository } from '../repositories/user.repository';
 import { UnauthorizedError } from '../errors/unauthoraized.error';
+import { ForbiddenError } from '../errors/forbidden.error';
 
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) { }
@@ -14,6 +15,11 @@ export class AuthService {
     if (!user) {
       logger.error('AuthService.login - User not found');
       throw new UnauthorizedError('Credenciais inválidas');
+    }
+
+    if (user.role.name !== 'admin') {
+      logger.error('AuthService.login - User is not an admin');
+      throw new ForbiddenError('Usuário não possui permissão para acessar este recurso');
     }
 
     logger.info('AuthService.login - Validating password');
@@ -28,6 +34,19 @@ export class AuthService {
 
     logger.info('AuthService.login - User logged in successfully');
     return { token };
+  }
+
+  async validateToken(token: string) {
+    logger.info('AuthService.validateToken - Validating token');
+    const decodedToken = await verifyToken(token);
+
+    if (!decodedToken) {
+      logger.error('AuthService.validateToken - Invalid token');
+      throw new UnauthorizedError('Token inválido');
+    }
+
+    logger.info('AuthService.validateToken - Token validated successfully');
+    return decodedToken;
   }
 }
 

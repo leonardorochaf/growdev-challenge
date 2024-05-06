@@ -5,6 +5,7 @@ import logger from '../log/logger';
 import { UnauthorizedError } from '../errors/unauthoraized.error';
 import { Validator } from '../validation/validator';
 import { loginSchema } from '../validation/schemas/auth.schemas';
+import { ForbiddenError } from '../errors/forbidden.error';
 
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
@@ -21,7 +22,7 @@ export class AuthController {
       return res.status(200).json({ token });
     } catch (error) {
       logger.error(error, 'AuthController.login - Error logging in user');
-      if (error instanceof UnauthorizedError) {
+      if (error instanceof UnauthorizedError || error instanceof ForbiddenError) {
         return res.status(error.statusCode).json({ error: error.message });
       }
       return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
