@@ -10,4 +10,7 @@ export const env = {
     PASSWORD: process.env.POSTGRES_PASSWORD ?? 'admin',
     DB_NAME: process.env.POSTGRES_DB_NAME ?? 'docker',
   },
+  TOKEN: {
+    SECRET: process.env.JWT_SECRET ?? 'SECRET',
+  },
 };

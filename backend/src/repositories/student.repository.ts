@@ -8,8 +8,10 @@ export class StudentRepository extends AbstractRepository {
     logger.info('StudentRepository.save - Saving a new student');
     const client = this.getClient(Student);
 
+    const savedStudent = await client.save(student);
+
     logger.info('StudentRepository.save - Student saved successfully');
-    return client.save(student);
+    return savedStudent;
   }
 
   async getByRA(ra: string): Promise<Student | null> {
