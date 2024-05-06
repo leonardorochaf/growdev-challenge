@@ -21,16 +21,19 @@ export class StudentService {
     return createdStudent;
   }
 
-  async list(input: ListStudentsInput): Promise<Student[]> {
+  async list(input: ListStudentsInput): Promise<ListStudentsOutput> {
     logger.info('StudentService.list - Listing all students');
-    const limit = input.qnt;
-    const offset = (input.page - 1) * input.qnt;
+    const offset = (input.page - 1) * 15;
 
-    const students = await this.studentRepository
-      .getAll(limit, offset, input.sortParam, input.sortOrder, input.filter);
+    const [students, total] = await this.studentRepository
+      .getAll(offset, input.filter);
 
-    logger.info(students, 'StudentService.list - Students listed successfully');
-    return students;
+    logger.info({ students, total }, 'StudentService.list - Students listed successfully');
+
+    const totalPages = Math.ceil(total / 15);
+    return {
+      students, total, totalPages, currentPage: input.page,
+    };
   }
 
   async getById(id: number): Promise<Student> {
@@ -91,10 +94,14 @@ export type CreateStudentInput = {
 
 export type ListStudentsInput = {
   filter?: string
-  sortParam: 'name' | 'email' | 'ra' | 'cpf'
-  sortOrder: 'ASC' | 'DESC'
   page: number
-  qnt: number
+};
+
+export type ListStudentsOutput = {
+  students: Student[]
+  total: number
+  totalPages: number
+  currentPage: number
 };
 
 export type UpdateStudentInput = {

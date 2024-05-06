@@ -22,7 +22,7 @@ export class StudentRepository extends AbstractRepository {
     return student;
   }
 
-  async getAll(limit: number, offset: number, sortParam: string, sortOrder: 'ASC' | 'DESC', filter?: string): Promise<Student[]> {
+  async getAll(offset: number, filter?: string): Promise<[Student[], number]> {
     logger.info('StudentRepository.getAll - Getting all students');
     const client = this.getClient(Student);
 
@@ -35,13 +35,10 @@ export class StudentRepository extends AbstractRepository {
       );
     }
 
-    const students = query.orderBy(`student.${sortParam} `, sortOrder)
-      .take(limit)
-      .skip(offset)
-      .getMany();
+    const data = await query.take(15).skip(offset).getManyAndCount();
 
     logger.info('StudentRepository.getAll - Students found');
-    return students;
+    return data;
   }
 
   async getById(id: number): Promise<Student | null> {

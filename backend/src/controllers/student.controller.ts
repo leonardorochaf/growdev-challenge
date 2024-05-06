@@ -38,13 +38,10 @@ export class StudentController {
     logger.info('StudentController.listStudents - Listing all students');
     try {
       const filter = req.query.filter as string;
-      const sortParam = req.query.sort as 'name' | 'email' | 'ra' | 'cpf';
-      const sortOrder = req.query.order as 'ASC' | 'DESC';
       const page = req.query.page as string;
-      const qnt = req.query.qnt as string;
 
       const students = await this.studentService.list({
-        filter, sortParam, sortOrder, page: +page, qnt: +qnt,
+        filter, page: +page,
       });
 
       logger.info('StudentController.listStudents - Students listed successfully');
