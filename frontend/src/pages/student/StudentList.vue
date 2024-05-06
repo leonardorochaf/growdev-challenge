@@ -48,7 +48,7 @@
       <template v-slot:actions>
         <v-spacer></v-spacer>
         <v-btn class="ms-auto" text="Cancelar" @click="dialog = false"></v-btn>
-        <v-btn :loading="loadingDelete" color="red" class="ms-auto" text="Confirmar" @click="deleteStudent"></v-btn>
+        <v-btn :loading="loadingDelete" class="mr-2 bg-red" text="Confirmar" @click="deleteStudent"></v-btn>
       </template>
     </v-card>
   </v-dialog>

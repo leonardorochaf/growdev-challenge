@@ -22,9 +22,9 @@ export class AuthController {
     } catch (error) {
       logger.error(error, 'AuthController.login - Error logging in user');
       if (error instanceof UnauthorizedError) {
-        return res.status(error.statusCode).json({ message: error.message });
+        return res.status(error.statusCode).json({ error: error.message });
       }
-      return res.status(500).json({ message: 'Não foi possível processar sua solicitação' });
+      return res.status(500).json({ error: 'Não foi possível processar sua solicitação' });
     }
   }
 }
