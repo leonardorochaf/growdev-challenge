@@ -17,6 +17,7 @@
 <script lang="ts">
 
 export default {
+  name: 'Management',
   data() {
     return {
       isOpen: true,

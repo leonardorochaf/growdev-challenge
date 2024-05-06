@@ -35,8 +35,12 @@ export const getStudent = async (id: number) => {
   return data;
 }
 
-export const updateStudent = async (student: Student) => {
+export const updateStudent = async (student: Omit<Student, "ra" | "cpf">) => {
   const { data } = await axios.put(`http://localhost:3000/api/students/${student.id}`, student);
 
   return data;
+}
+
+export const deleteStudent = async (id: number) => {
+  await axios.delete(`http://localhost:3000/api/students/${id}`);
 }

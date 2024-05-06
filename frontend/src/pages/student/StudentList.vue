@@ -34,7 +34,7 @@
           <td class="d-flex justify-center align-center">
             <v-btn icon="mdi-pencil" color="green" variant="plain"
               @click="$router.push({ name: 'StudentInfoUpdate', params: { id: student.id } })" />
-            <v-btn icon="mdi-delete" color="red" variant="plain" />
+            <v-btn icon="mdi-delete" color="red" variant="plain" @click="openDialog(student.id)" />
           </td>
         </tr>
       </tbody>
@@ -42,25 +42,46 @@
     <v-pagination @update:modelValue="loadStudents" v-model="page" :length="totalPages" :page="page" :total-visible="6"
       class="pt-6" active-color="orange"></v-pagination>
   </div>
+
+  <v-dialog v-model="dialog" width="auto">
+    <v-card max-width="400" prepend-icon="mdi-alert-circle-outline"
+      text="Tem certeza que deseja deletar esse estudante?" title="Confirmar exclusão">
+      <template v-slot:actions>
+        <v-spacer></v-spacer>
+        <v-btn class="ms-auto" text="Cancelar" @click="dialog = false"></v-btn>
+        <v-btn :loading="loadingDelete" color="red" class="ms-auto" text="Confirmar" @click="deleteStudent"></v-btn>
+      </template>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
+import { useToast } from 'vue-toastification';
+
 import Loading from '../../components/Loading.vue';
-import { getStudents } from '../../services/student.service';
+import { deleteStudent, getStudents } from '../../services/student.service';
 
 export default {
   name: 'StudentList',
   components: {
     Loading
   },
+  setup() {
+    const toast = useToast();
+
+    return { toast };
+  },
   data() {
     return {
+      loading: false,
+      loadingDelete: false,
       students: [],
       itemsPerPage: 10,
-      loading: false,
       page: 1,
       totalPages: 1,
-      filter: ''
+      filter: '',
+      dialog: false,
+      studentIdToDelete: undefined
     }
   },
   created() {
@@ -76,6 +97,32 @@ export default {
       this.totalPages = totalPages;
       this.page = currentPage;
       this.loading = false;
+    },
+    openDialog(id: number) {
+      this.studentIdToDelete = id;
+      this.dialog = true;
+    },
+    async deleteStudent() {
+      try {
+        this.loadingDelete = true;
+        await deleteStudent(this.studentIdToDelete);
+        this.loadingDelete = false;
+        this.dialog = false;
+
+        this.loading = true;
+        this.toast.success('Estudante deletado com sucesso');
+        await this.loadStudents(this.page);
+        this.loading = false;
+      } catch (err) {
+        this.loadingDelete = false;
+        this.dialog = false;
+
+        if (err.error) {
+          this.toast.error(err.error);
+          return;
+        }
+        this.toast.error('Erro ao deletar estudante');
+      }
     }
   }
 }

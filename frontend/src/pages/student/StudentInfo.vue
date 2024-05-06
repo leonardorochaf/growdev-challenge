@@ -102,8 +102,6 @@ export default {
             id: +this.id,
             name: this.name,
             email: this.email,
-            ra: this.ra,
-            cpf: this.cpf,
           });
         } else {
           await createStudent({
