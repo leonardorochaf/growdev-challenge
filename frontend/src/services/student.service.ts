@@ -18,29 +18,53 @@ export const getStudents = async (params: SearchParams) => {
   if (params.filter) {
     query += `&filter=${params.filter}`
   }
-  const { data } = await axios.get(`http://localhost:3000/api/students?${query}`);
+  try {
+    const { data } = await axios.get(`http://localhost:3000/api/students?${query}`);
 
-  return data;
+    return data;
+  } catch (err) {
+    const formatedError = err?.response?.data?.error || 'Erro ao buscar estudantes';
+    throw new Error(formatedError);
+  }
 }
 
 export const createStudent = async (student: Omit<Student, "id">) => {
-  const { data } = await axios.post('http://localhost:3000/api/students', student);
-
-  return data;
+  try {
+    const { data } = await axios.post('http://localhost:3000/api/students', student);
+    return data;
+  } catch (err) {
+    const formatedError = err?.response?.data?.error || 'Erro ao criar estudante';
+    throw new Error(formatedError);
+  }
 }
 
 export const getStudent = async (id: number) => {
-  const { data } = await axios.get(`http://localhost:3000/api/students/${id}`);
+  try {
+    const { data } = await axios.get(`http://localhost:3000/api/students/${id}`);
 
-  return data;
+    return data;
+  } catch (err) {
+    const formatedError = err?.response?.data?.error || 'Erro ao buscar estudante';
+    throw new Error(formatedError);
+  }
 }
 
 export const updateStudent = async (student: Omit<Student, "ra" | "cpf">) => {
-  const { data } = await axios.put(`http://localhost:3000/api/students/${student.id}`, student);
+  try {
+    const { data } = await axios.put(`http://localhost:3000/api/students/${student.id}`, student);
 
-  return data;
+    return data;
+  } catch (err) {
+    const formatedError = err?.response?.data?.error || 'Erro ao atualizar estudante';
+    throw new Error(formatedError);
+  }
 }
 
 export const deleteStudent = async (id: number) => {
-  await axios.delete(`http://localhost:3000/api/students/${id}`);
+  try {
+    await axios.delete(`http://localhost:3000/api/students/${id}`);
+  } catch (err) {
+    const formatedError = err?.response?.data?.error || 'Erro ao deletar estudante';
+    throw new Error(formatedError);
+  }
 }

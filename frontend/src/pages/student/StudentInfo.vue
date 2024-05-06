@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts">
+import { useToast } from 'vue-toastification';
 import { Mask } from 'maska';
 
 import { validateCPF } from '../../utils/validate-cpf';
@@ -76,44 +77,56 @@ export default {
   },
   setup() {
     return {
+      toast: useToast(),
       mask: new Mask({ mask: '###.###.###-##' }),
     }
   },
   async created() {
     if (this.id) {
-      this.loading = true;
+      try {
+        this.loading = true;
 
-      const student = await getStudent(this.id);
-      this.name = student.name;
-      this.email = student.email;
-      this.ra = student.ra;
-      this.cpf = student.cpf;
-
-      this.loading = false;
+        const student = await getStudent(this.id);
+        this.name = student.name;
+        this.email = student.email;
+        this.ra = student.ra;
+        this.cpf = student.cpf;
+      } catch (err) {
+        this.toast.error(err.message);
+        this.$router.push({ name: 'Students' });
+      } finally {
+        this.loading = false;
+      }
     }
   },
   methods: {
     async handleSubmit() {
       if (this.valid) {
-        this.loadingSubmit = true;
+        try {
+          this.loadingSubmit = true;
 
-        if (this.isEditing) {
-          await updateStudent({
-            id: +this.id,
-            name: this.name,
-            email: this.email,
-          });
-        } else {
-          await createStudent({
-            name: this.name,
-            email: this.email,
-            ra: this.ra,
-            cpf: this.cpf,
-          });
+          if (this.isEditing) {
+            await updateStudent({
+              id: +this.id,
+              name: this.name,
+              email: this.email,
+            });
+            this.toast.success('Estudante atualizado com sucesso');
+          } else {
+            await createStudent({
+              name: this.name,
+              email: this.email,
+              ra: this.ra,
+              cpf: this.cpf,
+            });
+            this.toast.success('Estudante salvo com sucesso');
+          }
+        } catch (err) {
+          this.toast.error(err.message);
+        } finally {
+          this.loadingSubmit = false;
+          this.$router.push({ name: 'Students' });
         }
-        this.loadingSubmit = false;
-
-        this.$router.push({ name: 'Students' });
       }
     }
   }
