@@ -116,7 +116,7 @@ describe('StudentService', () => {
 
   describe('list', () => {
     beforeAll(() => {
-      mockStudentRepository.getAll.mockResolvedValue([{
+      mockStudentRepository.getAll.mockResolvedValue([[{
         id: 1,
         name: 'John Doe',
         email: 'johndoe@mail.com',
@@ -124,19 +124,16 @@ describe('StudentService', () => {
         cpf: '12345678900',
         createdAt: new Date(),
         deletedAt: undefined,
-      }]);
+      }], 1]);
     });
 
     it('Should call getAll with correct values', async () => {
       await sut.list({
         filter: 'John',
-        sortParam: 'name',
-        sortOrder: 'ASC',
         page: 1,
-        qnt: 10,
       });
 
-      expect(mockStudentRepository.getAll).toHaveBeenCalledWith(10, 0, 'name', 'ASC', 'John');
+      expect(mockStudentRepository.getAll).toHaveBeenCalledWith(0, 'John');
     });
 
     it('Should throw if getAll throws', async () => {
@@ -144,10 +141,7 @@ describe('StudentService', () => {
 
       const promise = sut.list({
         filter: 'John',
-        sortParam: 'name',
-        sortOrder: 'ASC',
         page: 1,
-        qnt: 10,
       });
 
       await expect(promise).rejects.toThrow('Test Error');
@@ -156,21 +150,24 @@ describe('StudentService', () => {
     it('Should return the students', async () => {
       const students = await sut.list({
         filter: 'John',
-        sortParam: 'name',
-        sortOrder: 'ASC',
         page: 1,
-        qnt: 10,
       });
 
-      expect(students).toEqual([{
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@mail.com',
-        ra: '123456',
-        cpf: '12345678900',
-        createdAt: expect.any(Date),
-        deletedAt: undefined,
-      }]);
+      expect(students).toEqual({
+        students:
+          [{
+            id: 1,
+            name: 'John Doe',
+            email: 'johndoe@mail.com',
+            ra: '123456',
+            cpf: '12345678900',
+            createdAt: expect.any(Date),
+            deletedAt: undefined,
+          }],
+        currentPage: 1,
+        totalPages: 1,
+        total: 1,
+      });
     });
   });
 

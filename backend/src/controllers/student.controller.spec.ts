@@ -6,6 +6,7 @@ import { StudentController } from './student.controller';
 import { UnprocessableEntityError } from '../errors/unprocessable-entity.error';
 import { NotFoundError } from '../errors/not-found.error';
 
+jest.mock('../log/logger');
 jest.mock('../validation/validator');
 
 describe('StudentController', () => {
@@ -95,18 +96,24 @@ describe('StudentController', () => {
     let response: Response;
 
     beforeEach(() => {
-      studentService.list.mockResolvedValue([{
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@mail.com',
-        ra: '123456',
-        cpf: '12345678900',
-        createdAt: new Date(),
-        deletedAt: undefined,
-      }]);
+      studentService.list.mockResolvedValue({
+        students:
+          [{
+            id: 1,
+            name: 'John Doe',
+            email: 'johndoe@mail.com',
+            ra: '123456',
+            cpf: '12345678900',
+            createdAt: new Date(),
+            deletedAt: undefined,
+          }],
+        currentPage: 1,
+        totalPages: 1,
+        total: 1,
+      });
       request = getMockReq({
         query: {
-          filter: 'filter', sort: 'name', order: 'ASC', page: '1', qnt: '10',
+          filter: 'filter', page: '1',
         },
       });
       response = getMockRes().res;
@@ -116,7 +123,7 @@ describe('StudentController', () => {
       await sut.list(request, response);
 
       expect(studentService.list).toHaveBeenCalledWith({
-        filter: 'filter', sortParam: 'name', sortOrder: 'ASC', page: 1, qnt: 10,
+        filter: 'filter', page: 1,
       });
     });
 
@@ -133,15 +140,20 @@ describe('StudentController', () => {
       await sut.list(request, response);
 
       expect(response.status).toHaveBeenCalledWith(200);
-      expect(response.send).toHaveBeenCalledWith([{
-        id: 1,
-        name: 'John Doe',
-        email: 'johndoe@mail.com',
-        ra: '123456',
-        cpf: '12345678900',
-        createdAt: expect.any(Date),
-        deletedAt: undefined,
-      }]);
+      expect(response.send).toHaveBeenCalledWith({
+        students: [{
+          id: 1,
+          name: 'John Doe',
+          email: 'johndoe@mail.com',
+          ra: '123456',
+          cpf: '12345678900',
+          createdAt: expect.any(Date),
+          deletedAt: undefined,
+        }],
+        total: 1,
+        totalPages: 1,
+        currentPage: 1,
+      });
     });
   });
 

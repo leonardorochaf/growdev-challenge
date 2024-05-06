@@ -101,12 +101,12 @@ describe('Student routes', () => {
     });
 
     it('Should return 400 if fields validation fails', async () => {
-      const { status, body } = await request(app).get('/api/students?sort=invalid&order=ASC&page=1&qnt=10');
+      const { status, body } = await request(app).get('/api/students?page=invalidapage');
 
       expect(status).toBe(400);
       expect(body).toEqual({
         errors: {
-          sort: ["Invalid enum value. Expected 'name' | 'email' | 'ra' | 'cpf', received 'invalid'"],
+          page: ['Page must contain only numbers'],
         },
       });
     });
@@ -115,22 +115,29 @@ describe('Student routes', () => {
       const { status, body } = await request(app).get('/api/students?sort=name&order=ASC&page=2&qnt=10');
 
       expect(status).toBe(200);
-      expect(body).toEqual([]);
+      expect(body).toEqual({
+        students: [], currentPage: 2, total: 1, totalPages: 1,
+      });
     });
 
     it('Should return 200 on success', async () => {
       const { status, body } = await request(app).get('/api/students?sort=name&order=ASC&page=1&qnt=10');
 
       expect(status).toBe(200);
-      expect(body).toEqual([{
-        id: expect.any(Number),
-        name: 'John Doe',
-        email: 'johndoe@mail.com',
-        ra: '654321',
-        cpf: '12345678900',
-        createdAt: expect.any(String),
-        deletedAt: null,
-      }]);
+      expect(body).toEqual({
+        students: [{
+          id: expect.any(Number),
+          name: 'John Doe',
+          email: 'johndoe@mail.com',
+          ra: '654321',
+          cpf: '12345678900',
+          createdAt: expect.any(String),
+          deletedAt: null,
+        }],
+        total: 1,
+        currentPage: 1,
+        totalPages: 1,
+      });
     });
   });
 
