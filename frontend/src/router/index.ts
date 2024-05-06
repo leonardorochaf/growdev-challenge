@@ -26,8 +26,14 @@ const router = createRouter({
             },
             {
               path: "create",
-              name: "StudentInfo",
+              name: "StudentInfoCreate",
               component: StudentInfo,
+            },
+            {
+              path: ":id",
+              name: "StudentInfoUpdate",
+              component: StudentInfo,
+              props: true,
             },
           ]
         },

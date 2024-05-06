@@ -24,7 +24,7 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
-    if (to.name === 'StudentInfo') {
+    if (to.name === 'StudentInfoCreate' || to.name === 'StudentInfoUpdate') {
       this.headerTitle = 'Cadastro de aluno'
     } else {
       this.headerTitle = 'Consulta de alunos'

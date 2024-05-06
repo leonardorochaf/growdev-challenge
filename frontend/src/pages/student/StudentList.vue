@@ -6,12 +6,10 @@
       <v-btn @click="loadStudents(page, filter)" size="large" color="orange" variant="outlined" rounded="sm"
         icon="mdi-magnify"></v-btn>
     </div>
-    <v-btn @click="$router.push({ name: 'StudentInfo' })" size="x-large" color="orange" rounded="lg"
+    <v-btn @click="$router.push({ name: 'StudentInfoCreate' })" size="x-large" color="orange" rounded="lg"
       class="text-white">Cadastrar aluno</v-btn>
   </div>
-  <div v-if="loading" class="d-flex justify-center align-center flex-grow-1">
-    <v-progress-circular indeterminate color="orange" size="64" />
-  </div>
+  <Loading v-if="loading"></Loading>
   <div v-else class="pt-10">
     <v-table>
       <thead>
@@ -34,7 +32,8 @@
           <td class="text-center">{{ student.name }}</td>
           <td class="text-center">{{ student.cpf }}</td>
           <td class="d-flex justify-center align-center">
-            <v-btn icon="mdi-pencil" color="green" variant="plain" />
+            <v-btn icon="mdi-pencil" color="green" variant="plain"
+              @click="$router.push({ name: 'StudentInfoUpdate', params: { id: student.id } })" />
             <v-btn icon="mdi-delete" color="red" variant="plain" />
           </td>
         </tr>
@@ -46,9 +45,14 @@
 </template>
 
 <script lang="ts">
+import Loading from '../../components/Loading.vue';
 import { getStudents } from '../../services/student.service';
 
 export default {
+  name: 'StudentList',
+  components: {
+    Loading
+  },
   data() {
     return {
       students: [],
@@ -76,9 +80,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.v-pagination__item--is-active {
-  color: "red" !important
-}
-</style>

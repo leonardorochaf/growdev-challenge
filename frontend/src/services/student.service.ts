@@ -28,3 +28,15 @@ export const createStudent = async (student: Omit<Student, "id">) => {
 
   return data;
 }
+
+export const getStudent = async (id: number) => {
+  const { data } = await axios.get(`http://localhost:3000/api/students/${id}`);
+
+  return data;
+}
+
+export const updateStudent = async (student: Student) => {
+  const { data } = await axios.put(`http://localhost:3000/api/students/${student.id}`, student);
+
+  return data;
+}
