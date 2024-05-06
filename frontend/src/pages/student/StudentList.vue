@@ -6,7 +6,8 @@
       <v-btn @click="loadStudents(page, filter)" size="large" color="orange" variant="outlined" rounded="sm"
         icon="mdi-magnify"></v-btn>
     </div>
-    <v-btn size="x-large" color="orange" rounded="lg" class="text-white">Cadastrar aluno</v-btn>
+    <v-btn @click="$router.push({ name: 'StudentInfo' })" size="x-large" color="orange" rounded="lg"
+      class="text-white">Cadastrar aluno</v-btn>
   </div>
   <div v-if="loading" class="d-flex justify-center align-center flex-grow-1">
     <v-progress-circular indeterminate color="orange" size="64" />

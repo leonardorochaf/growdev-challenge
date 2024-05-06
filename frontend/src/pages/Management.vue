@@ -6,7 +6,7 @@
   </v-navigation-drawer>
   <v-app-bar>
     <v-app-bar-nav-icon @click="isOpen = !isOpen"></v-app-bar-nav-icon>
-    <v-app-bar-title class="text-center">Consulta de alunos</v-app-bar-title>
+    <v-app-bar-title class="text-center">{{ headerTitle }}</v-app-bar-title>
     <template v-slot:append>
       <v-btn icon="mdi-logout-variant"></v-btn>
     </template>
@@ -19,8 +19,17 @@
 export default {
   data() {
     return {
-      isOpen: true
+      isOpen: true,
+      headerTitle: 'Consulta de alunos'
     }
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (to.name === 'StudentInfo') {
+      this.headerTitle = 'Cadastro de aluno'
+    } else {
+      this.headerTitle = 'Consulta de alunos'
+    }
+    next()
   }
 }
 </script>
