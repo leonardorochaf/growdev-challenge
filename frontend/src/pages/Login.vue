@@ -1,6 +1,6 @@
 <template>
   <header class="bg-white d-flex justify-center pa-6 text-h4 font-weight-bold prevent-select">
-    Módulo Acadêmico
+    Edtech
   </header>
   <v-container class="pa-0 pa-lg-12 d-flex justify-center">
     <v-card class="rounded-md mt-12 pa-5 w-100 w-xl-50" :elevation="4">

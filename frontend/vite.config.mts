@@ -14,7 +14,9 @@ export default defineConfig({
   plugins: [
     VueRouter(),
     Vue({
-      template: { transformAssetUrls },
+      template: {
+        transformAssetUrls,
+      }
     }),
     // https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin#readme
     Vuetify({
@@ -26,7 +28,7 @@ export default defineConfig({
     Components(),
     ViteFonts({
       google: {
-        families: [ {
+        families: [{
           name: 'Roboto',
           styles: 'wght@100;300;400;500;700;900',
         }],
@@ -49,6 +51,6 @@ export default defineConfig({
     ],
   },
   server: {
-    port: 3000,
+    port: 3001,
   },
 })

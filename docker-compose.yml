@@ -1,0 +1,60 @@
+services:
+  api:
+    container_name: growdev-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+      - 9001:9001
+    volumes:
+      - ./backend/src:/usr/src/app/src
+    networks:
+      - growdev_network
+    environment:
+      - NODE_ENV=development
+      - APP_PORT=3000
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=docker
+      - JWT_SECRET=secret
+    depends_on:
+      - postgres
+
+  app:
+    container_name: growdev-frontend
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    volumes:
+      - ./frontend/src:/usr/src/app/src
+    networks:
+      - growdev_network
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: "docker"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "docker"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - growdev_network
+
+volumes:
+  pgdata:
+
+networks:
+  growdev_network:
+    driver: bridge
