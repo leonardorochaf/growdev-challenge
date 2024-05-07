@@ -1,4 +1,4 @@
-import axios from 'axios'
+import api from '../helpers/http.helper'
 
 export type Student = {
   id: number,
@@ -19,7 +19,7 @@ export const getStudents = async (params: SearchParams) => {
     query += `&filter=${params.filter}`
   }
   try {
-    const { data } = await axios.get(`http://localhost:3000/api/students?${query}`);
+    const { data } = await api.get(`/students?${query}`);
 
     return data;
   } catch (err) {
@@ -30,7 +30,7 @@ export const getStudents = async (params: SearchParams) => {
 
 export const createStudent = async (student: Omit<Student, "id">) => {
   try {
-    const { data } = await axios.post('http://localhost:3000/api/students', student);
+    const { data } = await api.post('/students', student);
     return data;
   } catch (err) {
     const formatedError = err?.response?.data?.error || 'Erro ao criar estudante';
@@ -40,7 +40,7 @@ export const createStudent = async (student: Omit<Student, "id">) => {
 
 export const getStudent = async (id: number) => {
   try {
-    const { data } = await axios.get(`http://localhost:3000/api/students/${id}`);
+    const { data } = await api.get(`/students/${id}`);
 
     return data;
   } catch (err) {
@@ -51,7 +51,7 @@ export const getStudent = async (id: number) => {
 
 export const updateStudent = async (student: Omit<Student, "ra" | "cpf">) => {
   try {
-    const { data } = await axios.put(`http://localhost:3000/api/students/${student.id}`, student);
+    const { data } = await api.put(`/students/${student.id}`, student);
 
     return data;
   } catch (err) {
@@ -62,7 +62,7 @@ export const updateStudent = async (student: Omit<Student, "ra" | "cpf">) => {
 
 export const deleteStudent = async (id: number) => {
   try {
-    await axios.delete(`http://localhost:3000/api/students/${id}`);
+    await api.delete(`/students/${id}`);
   } catch (err) {
     const formatedError = err?.response?.data?.error || 'Erro ao deletar estudante';
     throw new Error(formatedError);

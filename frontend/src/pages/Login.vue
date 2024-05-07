@@ -1,11 +1,11 @@
 <template>
-  <header class="bg-white d-flex justify-center pa-6 text-h4 font-weight-bold">
-    Sistema Acadêmico
+  <header class="bg-white d-flex justify-center pa-6 text-h4 font-weight-bold prevent-select">
+    Módulo Acadêmico
   </header>
   <v-container class="pa-0 pa-lg-12 d-flex justify-center">
     <v-card class="rounded-md mt-12 pa-5 w-100 w-xl-50" :elevation="4">
       <v-card-title class="text-center font-weight-bold">
-        <h1 class="font-weight text-h4">Login</h1>
+        <h1 class="font-weight text-h4 prevent-select">Login</h1>
         <v-divider class="mt-5 bg-secondary" />
       </v-card-title>
       <v-form v-model="valid" @submit.prevent="handleLogin">
@@ -34,6 +34,16 @@ import { setInLocalStorage } from '../services/local-storage.service';
 
 export default {
   name: 'Login',
+  props: {
+    isAuthError: {
+      type: Boolean,
+      default: false,
+    },
+    errorMessage: {
+      type: String,
+      default: '',
+    },
+  },
   setup() {
     return {
       toast: useToast(),
@@ -52,6 +62,11 @@ export default {
         (v: string) => !!v || 'Senha é obrigatória',
       ],
       showPassword: false,
+    }
+  },
+  created() {
+    if (this.isAuthError) {
+      this.toast.error(this.errorMessage);
     }
   },
   methods: {
@@ -73,3 +88,11 @@ export default {
   }
 }
 </script>
+
+<style>
+.prevent-select {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+</style>

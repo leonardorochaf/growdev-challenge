@@ -1,8 +1,9 @@
-import axios from "axios";
+import api from "../helpers/http.helper";
+
 
 export const login = async (loginInfo: { username: string, password: string }) => {
   try {
-    const { data } = await axios.post('http://localhost:3000/api/login', loginInfo);
+    const { data } = await api.post('/login', loginInfo);
     return data;
   } catch (err) {
     const formatedError = err?.response?.data?.error || 'Erro ao fazer login';

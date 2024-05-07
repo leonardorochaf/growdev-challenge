@@ -4,8 +4,7 @@ import Management from '../pages/Management.vue'
 import StudentList from '../pages/student/StudentList.vue'
 import StudentInfo from '../pages/student/StudentInfo.vue'
 import Login from '../pages/Login.vue'
-import { getFromLocalStorage, removeFromLocalStorage } from '../services/local-storage.service'
-import { validateToken } from '../services/auth.service'
+import { removeFromLocalStorage } from '../services/local-storage.service'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -62,16 +61,6 @@ router.beforeEach(async (to, from, next) => {
     if (to.name === 'Login') {
       removeFromLocalStorage('token');
       return next();
-    }
-
-    if (!getFromLocalStorage('token')) {
-      return next({ name: 'Login', replace: true });
-    }
-
-    const validToken = await validateToken(getFromLocalStorage('token'));
-    if (!validToken) {
-      removeFromLocalStorage('token');
-      return next({ name: 'Login', replace: true });
     }
 
     return next();

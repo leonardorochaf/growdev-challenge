@@ -3,7 +3,8 @@
     <form class="d-flex flex-grow-1 mr-lg-16" @submit.prevent="loadStudents(page, filter)">
       <v-text-field v-model="filter" variant="outlined" rounded="sm" bg-color="white"
         placeholder="Digite a sua busca"></v-text-field>
-      <v-btn size="large" color="orange" variant="outlined" rounded="sm" icon="mdi-magnify" type="submit"></v-btn>
+      <v-btn class="bg-white" size="large" color="orange" variant="outlined" rounded="sm" icon="mdi-magnify"
+        type="submit"></v-btn>
     </form>
     <v-btn @click="$router.push({ name: 'StudentInfoCreate' })" size="x-large" color="orange" rounded="lg"
       class="text-white">Cadastrar aluno</v-btn>
