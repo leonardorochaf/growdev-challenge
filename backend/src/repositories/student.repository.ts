@@ -37,7 +37,7 @@ export class StudentRepository extends AbstractRepository {
       );
     }
 
-    const data = await query.take(15).skip(offset).getManyAndCount();
+    const data = await query.take(15).skip(offset).orderBy('name').getManyAndCount();
 
     logger.info('StudentRepository.getAll - Students found');
     return data;
