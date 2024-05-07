@@ -1,5 +1,8 @@
+import swaggerUi from 'swagger-ui-express';
 import { Express, Router } from 'express';
 import { readdirSync } from 'fs';
+
+import swaggerConfig from '../docs/swagger-config';
 
 export const initRoutes = (app: Express) => {
   const router = Router();
@@ -10,4 +13,6 @@ export const initRoutes = (app: Express) => {
     });
 
   app.use('/api', router);
+
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 };
