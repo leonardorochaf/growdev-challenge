@@ -11,7 +11,7 @@ export const StudentPath = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/CreateStudentInput',
+            $ref: '#/components/schemas/CreateStudentInput',
           },
         },
       },
@@ -22,7 +22,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/Student',
+              $ref: '#/components/schemas/Student',
             },
             example: {
               id: 1,
@@ -41,7 +41,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseValidationErrorResponse',
+              $ref: '#/components/schemas/BaseValidationErrorResponse',
             },
             example: {
               errors: [
@@ -58,7 +58,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Email is already in use',
@@ -71,7 +71,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Não foi possível processar sua solicitação',
@@ -112,7 +112,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/ListStudentsOutput',
+              $ref: '#/components/schemas/ListStudentsOutput',
             },
             example: {
               students: [
@@ -138,7 +138,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseValidationErrorResponse',
+              $ref: '#/components/schemas/BaseValidationErrorResponse',
             },
             example: {
               errors: [
@@ -155,7 +155,7 @@ export const StudentPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Não foi possível processar sua solicitação',
@@ -191,7 +191,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/Student',
+              $ref: '#/components/schemas/Student',
             },
             example: {
               id: 1,
@@ -210,7 +210,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Estudante não encontrado',
@@ -223,7 +223,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Não foi possível processar sua solicitação',
@@ -255,7 +255,7 @@ export const StudentPathId = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/UpdateStudentInput',
+            $ref: '#/components/schemas/UpdateStudentInput',
           },
         },
       },
@@ -266,7 +266,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/Student',
+              $ref: '#/components/schemas/Student',
             },
             example: {
               id: 1,
@@ -285,7 +285,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseValidationErrorResponse',
+              $ref: '#/components/schemas/BaseValidationErrorResponse',
             },
             example: {
               errors: [
@@ -302,7 +302,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Estudante não encontrado',
@@ -315,7 +315,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Não foi possível processar sua solicitação',
@@ -351,7 +351,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Estudante não encontrado',
@@ -364,7 +364,7 @@ export const StudentPathId = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Não foi possível processar sua solicitação',

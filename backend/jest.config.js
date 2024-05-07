@@ -6,6 +6,7 @@ module.exports = {
     '!<rootDir>/src/database/**',
     '!<rootDir>/src/mocks/**',
     '!<rootDir>/src/log/**',
+    '!<rootDir>/src/utils/**',
     '!<rootDir>/src/**/*.schemas.ts',
     '!<rootDir>/src/**/*.repository.ts',
   ],

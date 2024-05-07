@@ -65,7 +65,7 @@ describe('Auth Routes', () => {
         .send({ ...requestBody, username: 'username' });
 
       expect(status).toBe(401);
-      expect(body).toEqual({ message: 'Credenciais inválidas' });
+      expect(body).toEqual({ error: 'Credenciais inválidas' });
     });
 
     it('Should return 401 if password is invalid', async () => {
@@ -74,7 +74,7 @@ describe('Auth Routes', () => {
         .send({ ...requestBody, password: 'invalidpassword' });
 
       expect(status).toBe(401);
-      expect(body).toEqual({ message: 'Credenciais inválidas' });
+      expect(body).toEqual({ error: 'Credenciais inválidas' });
     });
 
     it('Should return 200 with token', async () => {

@@ -2,7 +2,7 @@ import paths from './paths';
 import * as schemas from './schemas';
 
 export default {
-  openapi: '3.0.0',
+  openapi: '3.1.0',
   info: {
     title: 'Growdev Challenge API',
     description: 'API para o desafio backend da Growdev',
@@ -21,10 +21,10 @@ export default {
     },
   ],
   paths,
-  schemas: {
-    ...schemas,
-  },
   components: {
+    schemas: {
+      ...schemas,
+    },
     securitySchemes: {
       bearerAuth: {
         type: 'http',

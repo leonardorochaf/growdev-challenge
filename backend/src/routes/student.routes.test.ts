@@ -5,12 +5,18 @@ import app from '../app';
 import { DbConnection } from '../database/connection';
 import { initFakePgDb } from '../mocks/database/connection.mock';
 import { Student } from '../database/models/student.model';
+import { generateToken } from '../utils/token.utils';
 
 jest.mock('../log/logger');
 
 describe('Student routes', () => {
   let pgConnection: DbConnection;
   let backup: IBackup;
+  let token: string;
+
+  beforeAll(async () => {
+    token = await generateToken({ id: 1, username: 'johndoe', role: 'admin' });
+  });
 
   afterAll(async () => {
     await pgConnection.disconnect();
@@ -47,6 +53,7 @@ describe('Student routes', () => {
     it('Should return 400 if fields validation fails', async () => {
       const { status, body } = await request(app)
         .post('/api/students')
+        .auth(token, { type: 'bearer' })
         .send({ ...requestBody, name: '' });
 
       expect(status).toBe(400);
@@ -60,6 +67,7 @@ describe('Student routes', () => {
     it('Should return 422 if ra already exists', async () => {
       const { status, body } = await request(app)
         .post('/api/students')
+        .auth(token, { type: 'bearer' })
         .send({ ...requestBody, ra: '654321' });
 
       expect(status).toBe(422);
@@ -71,6 +79,7 @@ describe('Student routes', () => {
     it('Should return 201 on success', async () => {
       const { status, body } = await request(app)
         .post('/api/students')
+        .auth(token, { type: 'bearer' })
         .send(requestBody);
 
       expect(status).toBe(201);
@@ -101,7 +110,9 @@ describe('Student routes', () => {
     });
 
     it('Should return 400 if fields validation fails', async () => {
-      const { status, body } = await request(app).get('/api/students?page=invalidapage');
+      const { status, body } = await request(app)
+        .get('/api/students?page=invalidapage')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(400);
       expect(body).toEqual({
@@ -112,7 +123,9 @@ describe('Student routes', () => {
     });
 
     it('Should return empty array if no students are found', async () => {
-      const { status, body } = await request(app).get('/api/students?sort=name&order=ASC&page=2&qnt=10');
+      const { status, body } = await request(app)
+        .get('/api/students?sort=name&order=ASC&page=2&qnt=10')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(200);
       expect(body).toEqual({
@@ -121,7 +134,9 @@ describe('Student routes', () => {
     });
 
     it('Should return 200 on success', async () => {
-      const { status, body } = await request(app).get('/api/students?sort=name&order=ASC&page=1&qnt=10');
+      const { status, body } = await request(app)
+        .get('/api/students?sort=name&order=ASC&page=1&qnt=10')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(200);
       expect(body).toEqual({
@@ -159,7 +174,9 @@ describe('Student routes', () => {
     });
 
     it('Should return 404 if student is not found', async () => {
-      const { status, body } = await request(app).get('/api/students/2');
+      const { status, body } = await request(app)
+        .get('/api/students/2')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(404);
       expect(body).toEqual({
@@ -168,7 +185,9 @@ describe('Student routes', () => {
     });
 
     it('Should return 200 on success', async () => {
-      const { status, body } = await request(app).get('/api/students/1');
+      const { status, body } = await request(app)
+        .get('/api/students/1')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(200);
       expect(body).toEqual({
@@ -208,6 +227,7 @@ describe('Student routes', () => {
     it('Should return 400 if fields validation fails', async () => {
       const { status, body } = await request(app)
         .put('/api/students/1')
+        .auth(token, { type: 'bearer' })
         .send({ ...requestBody, name: '' });
 
       expect(status).toBe(400);
@@ -221,6 +241,7 @@ describe('Student routes', () => {
     it('Should return 404 if student is not found', async () => {
       const { status, body } = await request(app)
         .put('/api/students/2')
+        .auth(token, { type: 'bearer' })
         .send(requestBody);
 
       expect(status).toBe(404);
@@ -232,6 +253,7 @@ describe('Student routes', () => {
     it('Should return 200 on success', async () => {
       const { status, body } = await request(app)
         .put('/api/students/1')
+        .auth(token, { type: 'bearer' })
         .send(requestBody);
 
       expect(status).toBe(200);
@@ -265,7 +287,9 @@ describe('Student routes', () => {
     });
 
     it('Should return 404 if student is not found', async () => {
-      const { status, body } = await request(app).delete('/api/students/2');
+      const { status, body } = await request(app)
+        .delete('/api/students/2')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(404);
       expect(body).toEqual({
@@ -274,7 +298,9 @@ describe('Student routes', () => {
     });
 
     it('Should return 204 on success', async () => {
-      const { status } = await request(app).delete('/api/students/1');
+      const { status } = await request(app)
+        .delete('/api/students/1')
+        .auth(token, { type: 'bearer' });
 
       expect(status).toBe(204);
     });

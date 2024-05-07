@@ -1,0 +1,411 @@
+---
+openapi: 3.1.0
+info:
+  title: Growdev Challenge API
+  description: API para o desafio backend da Growdev
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+tags:
+  - name: Auth
+  - name: Students
+paths:
+  "/login":
+    post:
+      tags:
+        - Auth
+      summary: Authenticate user
+      description: Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/LoginOutput"
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzE1MDQxNjkxLCJleHAiOjE3MTUxMjgwOTF9.iXFUC5X3bhPJ-TbXNRhfqdUeWGhP8HYLnM3Sz9ecOec
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseValidationErrorResponse"
+              example:
+                errors:
+                  - email:
+                      - Email is required
+                  - password:
+                      - Password is required
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Credenciais inválidas
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Usuário não possui permissão para acessar este recurso
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Não foi possível processar sua solicitação
+  "/students":
+    post:
+      tags:
+        - Students
+      summary: Create a student
+      description: Create a student
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateStudentInput"
+      responses:
+        "201":
+          description: Student created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Student"
+              example:
+                id: 1
+                name: John Doe
+                email: johndoe@email.com
+                ra: "123456"
+                cpf: "12345678901"
+                createdAt: "2021-01-01T00:00:00.000Z"
+                deletedAt:
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseValidationErrorResponse"
+              example:
+                errors:
+                  - name:
+                      - Name is required
+        "422":
+          description: Student with RA already exists
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Email is already in use
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Não foi possível processar sua solicitação
+    get:
+      tags:
+        - Students
+      summary: List all students
+      description: List all students
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: filter
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Students listed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ListStudentsOutput"
+              example:
+                students:
+                  - id: 1
+                    name: John Doe
+                    email: johndoe@email.com
+                    ra: "123456"
+                    cpf: "12345678901"
+                    createdAt: "2021-01-01T00:00:00.000Z"
+                    deletedAt:
+                totalPages: 1
+                total: 1
+                currentPage: 1
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseValidationErrorResponse"
+              example:
+                errors:
+                  - page:
+                      - Page is required
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Não foi possível processar sua solicitação
+  "/students/{id}":
+    get:
+      tags:
+        - Students
+      summary: Get student by id
+      description: Get student by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Student retrieved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Student"
+              example:
+                id: 1
+                name: John Doe
+                email: johndoe@email.com
+                ra: "123456"
+                cpf: "12345678901"
+                createdAt: "2021-01-01T00:00:00.000Z"
+                deletedAt:
+        "404":
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Estudante não encontrado
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Não foi possível processar sua solicitação
+    put:
+      tags:
+        - Students
+      summary: Update a student
+      description: Update a student
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateStudentInput"
+      responses:
+        "200":
+          description: Student updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Student"
+              example:
+                id: 1
+                name: John Doe
+                email: johndoe@email.com
+                ra: "123456"
+                cpf: "12345678901"
+                createdAt: "2021-01-01T00:00:00.000Z"
+                deletedAt:
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseValidationErrorResponse"
+              example:
+                errors:
+                  - email:
+                      - Invalid email
+        "404":
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Estudante não encontrado
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Não foi possível processar sua solicitação
+    delete:
+      tags:
+        - Students
+      summary: Delete a student
+      description: Delete a student
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        "204":
+          description: Student deleted
+        "404":
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Estudante não encontrado
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/BaseErrorResponse"
+              example:
+                error: Não foi possível processar sua solicitação
+components:
+  schemas:
+    BaseErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    BaseValidationErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: array
+                items:
+                  type: string
+    LoginInput:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    LoginOutput:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    Student:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        email:
+          type: string
+        ra:
+          type: string
+        cpf:
+          type: string
+        createdAt:
+          type: string
+        deletedAt:
+          type: string
+    CreateStudentInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        ra:
+          type: string
+        cpf:
+          type: string
+      required:
+        - name
+        - email
+        - ra
+        - cpf
+    ListStudentsOutput:
+      type: object
+      properties:
+        students:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Student"
+        totalPages:
+          type: number
+        total:
+          type: number
+        currentPage:
+          type: number
+    UpdateStudentInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

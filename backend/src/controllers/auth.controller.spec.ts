@@ -47,7 +47,7 @@ describe('AuthController', () => {
       await sut.login(request, response);
 
       expect(response.status).toHaveBeenCalledWith(401);
-      expect(response.json).toHaveBeenCalledWith({ message: 'UnauthorizedError' });
+      expect(response.json).toHaveBeenCalledWith({ error: 'UnauthorizedError' });
     });
 
     it('Should return 500 if authService.login throws', async () => {
@@ -56,7 +56,7 @@ describe('AuthController', () => {
       await sut.login(request, response);
 
       expect(response.status).toHaveBeenCalledWith(500);
-      expect(response.json).toHaveBeenCalledWith({ message: 'Não foi possível processar sua solicitação' });
+      expect(response.json).toHaveBeenCalledWith({ error: 'Não foi possível processar sua solicitação' });
     });
 
     it('Should return 200 with token', async () => {

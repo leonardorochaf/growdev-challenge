@@ -8,7 +8,7 @@ export const LoginPath = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/LoginInput',
+            $ref: '#/components/schemas/LoginInput',
           },
         },
       },
@@ -19,7 +19,7 @@ export const LoginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/LoginOutput',
+              $ref: '#/components/schemas/LoginOutput',
             },
             example: {
               token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzE1MDQxNjkxLCJleHAiOjE3MTUxMjgwOTF9.iXFUC5X3bhPJ-TbXNRhfqdUeWGhP8HYLnM3Sz9ecOec',
@@ -32,7 +32,7 @@ export const LoginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseValidationErrorResponse',
+              $ref: '#/components/schemas/BaseValidationErrorResponse',
             },
             example: {
               errors: [
@@ -52,7 +52,7 @@ export const LoginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Credenciais inválidas',
@@ -65,7 +65,7 @@ export const LoginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Usuário não possui permissão para acessar este recurso',
@@ -78,7 +78,7 @@ export const LoginPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/BaseErrorResponse',
+              $ref: '#/components/schemas/BaseErrorResponse',
             },
             example: {
               error: 'Não foi possível processar sua solicitação',
